@@ -1,3 +1,9 @@
 [submodule "postgresql"]
 	path = postgresql
 	url = https://github.com/aarroyoc/postgresql-prolog
+[submodule "teruel"]
+	path = teruel
+	url = https://github.com/aarroyoc/teruel
+[submodule "scryer-http-lyncex"]
+	path = scryer-http-lyncex
+	url = https://github.com/aarroyoc/scryer-http-lyncex

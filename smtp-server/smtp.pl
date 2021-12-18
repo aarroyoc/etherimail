@@ -13,7 +13,6 @@
 % tester https://smtper.net/, Gmail, Outlook, Cartero UVa
 
 % TODO:
-% - fix SQL save
 % - better close Server
 % - automated Python Test
 
@@ -107,8 +106,7 @@ smtp(Stream, rcpt_to(To), Session0, Session) :-
 smtp(Stream, data, Session0, Session) :-
     format(Stream, "354 Enter message, ending with . on a line by itself\r\n", []),
     read_message(Stream, Message),
-    foldl(append, Message, "", MessageFull), %% TODO: Join lines
-    format("~s\n", [MessageFull]),
+    join_message(Message, MessageFull),
     format(Stream, "250 Ok\r\n", []),
     put_assoc(msg, Session0, MessageFull, Session),
     save_msg(Session).
@@ -151,6 +149,13 @@ read_message(Stream, [Cs|Message]) :-
     ;   read_message(Stream, Message)
     ).
 
+% last line is not saved
+% lines are joined with \n
+join_message([_],[]).
+join_message([X|Xs], Y) :-
+    append(X, "\n", X1),
+    join_message(Xs, Ys),
+    append(X1, Ys, Y).
 
 string_([X|Xs]) -->
     [X],
@@ -160,13 +165,14 @@ string_([]) -->
     [].
 
 save_msg(Session) :-
-    portray_clause(Session),
     get_assoc(from, Session, From),
     get_assoc(to, Session, To),
     get_assoc(msg, Session, Msg),
-    connect("postgres", "postgres", '127.0.0.1', 5432, "postgres", Connection),
-    phrase(format_("INSERT INTO mail (from_address, person_id, body) VALUES ('~s', '~s', '~s', '~s')", [From, To, Msg]), Query),
-    format("~s\n", [Query]),
+    connect("postgres", "postgres", postgres, 5432, "postgres", Connection),
+    maplist(save_msg(Connection, From, Msg), To).
+
+save_msg(Connection, From, Msg, To) :-
+    phrase(format_("INSERT INTO mail (from_address, to_address, body) VALUES ('~s', '~s', '~s')", [From, To, Msg]), Query),
     query(Connection, Query, Status),
     ( Status = ok -> true
     ; portray_clause(Status)

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>EtheriMail - Disposable mail</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="main.css">
+        <script src="/htmx.min.js"></script>
+    </head>
+    <body>
+        <h1>EtheriMail - Disposable mail</h1>
+        <h4>Your email address: {{ email }}</h4>
+        <div hx-get="/mails" hx-trigger="every 5s" id="mail-list">
+            <p>No mails received yet!</p>
+        </div>
+    </body>
+</html>

@@ -12,6 +12,22 @@ services:
       - ./initdb:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
+  smtp:
+    build: .
+    ports:
+      - "25:25"
+    command:
+      - /usr/bin/scryer-prolog
+      - smtp.pl
+    working_dir: /opt/etherimail/smtp-server
+  web:
+    build: .
+    ports:
+      - "7890:7890"
+    command:
+      - /usr/bin/scryer-prolog
+      - main.pl
+    working_dir: /opt/etherimail/web-server
 
 volumes:
   data:

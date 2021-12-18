@@ -1,0 +1,8 @@
+<div>
+    {% for mail in mails %}
+        <div>
+            <h3>{{ mail.subject }} ({{ mail.from }})</h3>
+            <p>{{ mail.content }}</p>
+        </div>
+    {% endfor %}
+</div>
