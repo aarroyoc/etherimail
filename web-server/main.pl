@@ -17,9 +17,9 @@
 
 home(Request, Response) :-
     http_headers(Request, Headers),
-    member("cookie"-CookiesStr, Headers),
-    string_cookies(CookiesStr, Cookies),
-    ( member("etherimailId"-EtherimailId, Cookies) ->
+    ( (member("cookie"-CookiesStr, Headers),
+      string_cookies(CookiesStr, Cookies),
+      member("etherimailId"-EtherimailId, Cookies)) ->
         true
     ;   (
             uuidv4_string(EtherimailId),
